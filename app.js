@@ -1,9 +1,10 @@
 var express = require('express');
 var routes = require('./routes');
-var http = require('http');
 var path = require('path');
 var less = require('less-middleware');
 var app = express();
+var http = require('http').createServer(app);
+var io = require('socket.io').listen(http);
 
 app.configure(function () {
     app.set('port', process.env.PORT || 3000);
@@ -38,6 +39,6 @@ app.configure('development', function () {
 
 app.get('/', routes.index);
 
-http.createServer(app).listen(app.get('port'), function () {
+http.listen(app.get('port'), function () {
     console.log("Serwer nasłuchuje na porcie " + app.get('port'));
 });

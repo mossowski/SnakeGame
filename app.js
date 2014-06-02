@@ -4,7 +4,8 @@ var path = require('path');
 var less = require('less-middleware');
 var app = express();
 var http = require('http').createServer(app);
-var io = require('socket.io').listen(http);
+var socketio = require('socket.io');
+var socket = socketio.listen(http);
 
 app.configure(function () {
     app.set('port', process.env.PORT || 3000);
@@ -42,3 +43,13 @@ app.get('/', routes.index);
 http.listen(app.get('port'), function () {
     console.log("Serwer nasłuchuje na porcie " + app.get('port'));
 });
+
+var snakeLength = 3; //poczatkowa dlugosc weza
+
+
+Snake = (function() {
+
+    function Snake(id) {
+        this.id = id;
+    }
+})();

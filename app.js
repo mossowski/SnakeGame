@@ -44,7 +44,7 @@ http.listen(app.get('port'), function () {
     console.log("Serwer nasłuchuje na porcie " + app.get('port'));
 });
 
-var snakeLength = 1;        //poczatkowa dlugosc weza
+var snakeLength = 3;        //poczatkowa dlugosc weza
 var autoId = 1;       
 var snakes = [];        //tablica wezow
 
@@ -52,10 +52,41 @@ Snake = (function() {
 
     function Snake(id) {
         this.id = id;
+        this.spawn();
     }
 
-    Snake.prototype.moveSnake = function() {     
+    Snake.prototype.spawn = function() {
+        var i;
+        var randomHeight = Math.floor(Math.random() * 50);
+        var randomWidth = Math.floor(Math.random() * 45);
+        this.length = snakeLength;
+        this.direction = "right";
+
+        var snakePosition = function(length) {
+            var results = [];
+            for (i =  length - 1; i >= 0; i--) {
+                results.push([randomWidth + i, randomHeight]);
+            }
+            return results;
+        };
+        console.log(snakePosition(this.length));
+        return this.elements = snakePosition(this.length);   
+    };
+
+    Snake.prototype.moveSnake = function() { 
+        //var head = this.length - 1;
+        //console.log("x: " + this.elements[head][0] + "  y: " + this.elements[head][1]);  
+        //console.log("Dlugosc weza: " + this.length);
+        var i;
+        for (i = 0; i <= this.length - 2; i++) {
+        this.moveTail(i);
+        }  
         return this.moveHead();
+    };
+
+    Snake.prototype.moveTail = function(i) {
+        this.elements[i][0] = this.elements[i + 1][0];
+        return this.elements[i][1] = this.elements[i + 1][1];
     };
     
     Snake.prototype.moveHead = function() {
@@ -94,9 +125,17 @@ socket.on("connection", function(user) {
     snakes.push(userSnake);
 
     console.log("User with id:  " + userId + " connected");
-    
+
+    user.send(JSON.stringify({
+      type: 'id',
+      value: userId
+    }));
+
     user.on("message", function(message) {
+        //console.log("message  = " + message);
         message = JSON.parse(message);
+        //console.log("message  = " + message);
+        //console.log("message direction = " + message.direction);
         return userSnake.direction = message.direction;
     });
 
@@ -108,3 +147,17 @@ socket.on("connection", function(user) {
         return console.log("User with id:  " + userId + " disconnected");
     });
 });
+
+updateGame = function() {
+    var snake, i;
+    for (i = 0; i < snakes.length; i++) {
+      snake = snakes[i];
+      snake.moveSnake();
+    }
+    return socket.broadcast(JSON.stringify({
+      type: 'snakes',
+      value: snakes
+    }));
+};
+
+setInterval(updateGame, 100);

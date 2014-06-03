@@ -14,15 +14,27 @@ $(document).ready(function() {
         }));        
     };
    
-    var draw = function() {
-        var x,y;
+    var draw = function(snakes) {
+        var  snake, x, y, i;
         context.fillStyle = '#A9D0F5 ';   
         for (x = 0; x <= stageWidth; x++) {
             for (y = 0; y <= stageHeight; y++) {
                 context.fillRect(x * 10, y * 10, 9, 9);
             }
         }
-    };
+
+        for (i = 0; i < snakes.length; i++) {
+              snake = snakes[i];
+              context.fillStyle = snake.id === id ? '#000000' : '#FF0000';
+              var j;
+           
+              for (j = 0; j < snake.elements.length; j++) {
+                  x = snake.elements[j][0] * 10;
+                  y = snake.elements[j][1] * 10;
+                 context.fillRect(x, y, 9, 9);
+              }
+          }       
+      };
     
     var connect = function() {
         server = new io.Socket(window.location.host.name, {'port': 3000 });
@@ -37,7 +49,9 @@ $(document).ready(function() {
                     return draw(message.value);
             }
         });
-     };
+    };
+    
+    connect();   
 
     return $(document).keydown(function(event) {
         var key;

@@ -44,12 +44,67 @@ http.listen(app.get('port'), function () {
     console.log("Serwer nasłuchuje na porcie " + app.get('port'));
 });
 
-var snakeLength = 3; //poczatkowa dlugosc weza
-
+var snakeLength = 1;        //poczatkowa dlugosc weza
+var autoId = 1;       
+var snakes = [];        //tablica wezow
 
 Snake = (function() {
 
     function Snake(id) {
         this.id = id;
     }
+
+    Snake.prototype.moveSnake = function() {     
+        return this.moveHead();
+    };
+    
+    Snake.prototype.moveHead = function() {
+        var head = this.length - 1;
+
+        switch (this.direction) {
+        
+        case "left":
+            this.elements[head][0] -= 1;
+            break;
+        case "right":
+            this.elements[head][0] += 1;
+            break;
+        case "up":
+            this.elements[head][1] -= 1;
+            break;
+        case "down":
+            this.elements[head][1] += 1;
+            break;
+        }    
+    };
+
+    Snake.prototype.head = function() {
+      return this.elements[this.length - 1];
+    };
+
+    return Snake;
 })();
+
+// Sockety
+
+socket.on("connection", function(user) {
+    var userId = autoId;
+    var userSnake = new Snake(userId);
+    autoId++;
+    snakes.push(userSnake);
+
+    console.log("User with id:  " + userId + " connected");
+    
+    user.on("message", function(message) {
+        message = JSON.parse(message);
+        return userSnake.direction = message.direction;
+    });
+
+    user.on("disconnect", function() {
+        var index = snakes.indexOf(userSnake);
+        if(index > -1) {
+            snakes.splice(index,1);
+        }
+        return console.log("User with id:  " + userId + " disconnected");
+    });
+});

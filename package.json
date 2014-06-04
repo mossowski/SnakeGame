@@ -9,6 +9,6 @@
     "express": "3.x",
     "less-middleware": "0.1.x",
     "ejs": "*",
-    "socket.io": "*"
+    "socket.io": "= 0.6.18"
   }
 }

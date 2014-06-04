@@ -13,7 +13,7 @@ app.configure(function () {
     app.set('view engine', 'ejs');
     app.use(express.json());
     app.use(express.urlencoded());
-    app.use(express.methodOverride());
+    //app.use(express.methodOverride());
     app.use(express.cookieParser('bardzo tajne aqq'));
     app.use(express.session());
     app.use(app.router);

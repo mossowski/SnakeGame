@@ -1,7 +1,11 @@
-﻿body {
-        padding: 5px;
+﻿@canvas-border: solid 3px @border-color;
+@border-color: #000000;
+@menu-color:  #99CCFF;
+
+body {
+        padding: 1px;
         font-family: Consolas, Helvetica, Arial, sans-serif;
-        font-size: 16px;
+        margin: 0;
 }
 h1 {
         font-weight: bold; 	
@@ -11,7 +15,7 @@ h1 {
 }
 #stage {
        	display: block;
-        border:solid 2px black;
+        border: @canvas-border;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -20,5 +24,19 @@ h1 {
         padding-bottom: 10px;
 }
 #bestScore {
-        margin-left:15px;
+        margin-left: 35px;
+}
+#menu { 
+        background-color: #000000;
+        text-align: center;
+       color: @menu-color;
+       border:solid 1px #000000;
+       
+}
+#container {
+       background-color: #ECECEC;
+       padding:25px;
+       margin-left: auto;
+       margin-right: auto;
+       width: 1000px;
 }

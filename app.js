@@ -47,6 +47,8 @@ http.listen(app.get('port'), function () {
 var snakeLength = 3;        //poczatkowa dlugosc weza
 var autoId = 1;       
 var snakes = [];        //tablica wezow
+var stageHeight = 60;
+var stageWidth = 60;
 
 Snake = (function() {
 
@@ -69,7 +71,7 @@ Snake = (function() {
             }
             return results;
         };
-        console.log(snakePosition(this.length));
+        //console.log(snakePosition(this.length));
         return this.elements = snakePosition(this.length);   
     };
 
@@ -106,11 +108,38 @@ Snake = (function() {
         case "down":
             this.elements[head][1] += 1;
             break;
-        }    
+        } 
+        
+        if (this.elements[head][0] < 0) {
+            this.elements[head][0] = stageWidth;
+        }
+        if (this.elements[head][1] < 0) {
+            this.elements[head][1] = stageHeight;
+        }
+        if (this.elements[head][0] > stageWidth) {
+            this.elements[head][0] = 0;
+        }
+        if (this.elements[head][1] > stageHeight) {
+            this.elements[head][1] = 0;
+        }  
     };
 
     Snake.prototype.head = function() {
       return this.elements[this.length - 1];
+    };
+    
+    Snake.prototype.collisionSnake = function(other) {
+        var collision, element, i, enemySnake;
+        var head = this.head(); 
+        collision = false;
+        enemySnake = other.elements;
+        for (i = 0; i < enemySnake.length; i++) {
+            element = enemySnake[i];
+            if (head[0] === element[0] && head[1] === element[1]) {
+                collision = true;
+            }
+        }
+        return collision;
     };
 
     return Snake;
@@ -154,10 +183,34 @@ updateGame = function() {
       snake = snakes[i];
       snake.moveSnake();
     }
+    checkCollisions();
     return socket.broadcast(JSON.stringify({
       type: 'snakes',
       value: snakes
     }));
 };
 
+checkCollisions = function() {
+    var other, snake, i, j, k, results;
+    var resetSnakes = [];
+    for (i = 0; i < snakes.length; i++) {
+        snake = snakes[i];
+      
+        for (j = 0; j < snakes.length; j++) {
+            other = snakes[j];
+            if (other !== snake) {
+                if (snake.collisionSnake(other)) {
+                    resetSnakes.push(other);
+                }
+            }
+        }
+        results = [];
+
+        for (k = 0; k < resetSnakes.length; k++) {
+            other = resetSnakes[k];
+            results.push(other.spawn());
+        }
+    }
+    return results;
+};
 setInterval(updateGame, 100);

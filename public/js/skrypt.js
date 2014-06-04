@@ -16,6 +16,7 @@ $(document).ready(function() {
    
     var draw = function(snakes,food) {
         var  snake, fud, x, y, i, j;
+        var bestScore = 0;
         context.fillStyle = '#A9D0F5 '; 
 
         for (i = 0; i <= stageWidth; i++) {
@@ -35,7 +36,11 @@ $(document).ready(function() {
             context.fillStyle = snake.id === id ? '#000000' : '#FF0000';
 
             if (snake.id === id) {
-                $("#score").html("Score: " + snake.length);
+                $("#score").html("Your score: " + snake.length);
+            }
+            if (snake.length > bestScore) {
+                $("#bestScore").html("Best score: " + snake.length);
+                bestScore = snake.length;
             }
            
             for (j = 0; j < snake.length; j++) {

@@ -1,7 +1,7 @@
 $(document).ready(function() {
     var canvas,server,context;
     var stageHeight = 60;
-    var stageWidth = 60;
+    var stageWidth = 90;
     var id = null;
 
     server = window.location.host.name;

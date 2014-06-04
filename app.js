@@ -49,7 +49,7 @@ var autoId = 1;
 var snakes = [];        //tablica wezow
 var food = [];
 var stageHeight = 60;
-var stageWidth = 60;
+var stageWidth = 90;
 
 var Food = (function() {
 
@@ -59,7 +59,7 @@ var Food = (function() {
 
     Food.prototype.spawn = function() {
         var randomHeight = Math.floor(Math.random() * 50);
-        var randomWidth = Math.floor(Math.random() * 45);
+        var randomWidth = Math.floor(Math.random() * 65);
                
         this.x = randomWidth;
         this.y = randomHeight;  
@@ -78,7 +78,7 @@ var Snake = (function() {
     Snake.prototype.spawn = function() {
         var i;
         var randomHeight = Math.floor(Math.random() * 50);
-        var randomWidth = Math.floor(Math.random() * 45);
+        var randomWidth = Math.floor(Math.random() * 65);
         this.length = snakeLength;
         this.direction = "right";
 
@@ -154,14 +154,57 @@ var Snake = (function() {
 
     Snake.prototype.collisionSnake = function(other) {
         var collision, element, i, enemySnake;
-        var head = this.head(); //tylko glowa
+        var head = this.head();
+        var enemyHead = other.head();
         collision = false;
         //console.log("other" + other);
+       // console.log("glowa: " + head);
         enemySnake = other.elements;
         for (i = 0; i < enemySnake.length; i++) {
             element = enemySnake[i];
+            
             if (head[0] === element[0] && head[1] === element[1]) {
-                collision = true;
+              // console.log("glowa: " + this.length-1);
+              //console.log("miejsce uderzenia: " + i);
+                if (head[0] === enemyHead[0] && head[1] === enemyHead[1])  {
+                   // console.log("zderzenie glowami");
+                    
+                    if(this.direction === 'left')
+                        this.direction = 'right';
+                    else if (this.direction === 'right')
+                        this.direction = 'left';
+                    else if (this.direction === 'up')
+                        this.direction = 'down';
+                    else if (this.direction === 'down')
+                        this.direction = 'up';
+
+                    return collision;
+                }
+                else if ((head[0] === enemySnake[other.length-2][0] && head[1] === enemySnake[other.length-2][1]) || (enemyHead[0] === this.elements[this.length-2][0] && enemyHead[1] === this.elements[this.length-2][1])) {
+                    
+                    if(this.direction === 'left') {
+                        this.elements[this.length-1][0] += 2;
+                        this.direction = 'right';
+                    }
+                    else if (this.direction === 'right') {
+                        this.elements[this.length-1][0] -= 2;
+                        this.direction = 'left';
+                    }
+                    else if (this.direction === 'up') {
+                        this.elements[this.length-1][1] += 2;
+                        this.direction = 'down';
+                    }
+                    else if (this.direction === 'down') {
+                        this.elements[this.length-1][1] -= 2;
+                        this.direction = 'up';
+                    }
+
+                    return collision;
+                }
+                else {      
+                  //  console.log("miejsce uderzenia: " + i);
+                    return i+1;     //  indexy od 0 wiec +1
+                }
             }
         }
         return collision;
@@ -211,7 +254,7 @@ socket.on("connection", function(user) {
 
     user.on("disconnect", function() {
         var index = snakes.indexOf(userSnake);
-        if(index > -1) {
+        if(index > -1) {    //jestli istnieje
             snakes.splice(index,1);
         }
         return console.log("User with id:  " + userId + " disconnected");
@@ -228,7 +271,7 @@ var updateGame = function() {
 
     checkCollisions();
 
-    return socket.broadcast(JSON.stringify({
+    return socket.broadcast(JSON.stringify({ //convert to JSON
         type: 'snakes',
         valueS: snakes,
         valueF: food
@@ -236,7 +279,7 @@ var updateGame = function() {
 };
 
 var checkCollisions = function() {
-    var other, snake, i, j, results, foood;
+    var other, snake, i, j, k, results, foood, head, cut;
     var resetSnakes = [];
     var resetFood = [];
     for (i = 0; i < snakes.length; i++) {
@@ -244,18 +287,29 @@ var checkCollisions = function() {
       
         for (j = 0; j < snakes.length; j++) {
             other = snakes[j];
+            head = snake.head(); 
             if (other !== snake) {
-                if (snake.collisionSnake(other)) {
-                    resetSnakes.push(other);
+                if (snake.collisionSnake(other) !== false) {  //false || 0,1 itd.
+                    cut = snake.collisionSnake(other);
+                  //  console.log("cut: " + cut);
+                 //   console.log("other length before cut: " + other.length);
+                    if(other.length > 1) {
+                        other.elements.splice(0,cut);
+                        other.length -= cut;
+                    }
+                    
+                 //   console.log("other length after cut: " + other.length);
+                    for(k = 0; k < cut; k++)
+                        snake.grow(head[0],head[1]);
                 }
             }
         }
     
         for (j = 0; j < food.length; j++) {
             foood = food[j];
-            var head = snake.head();  
+            head = snake.head();  
 
-            if (head[0] === foood.x && head[1] === foood.y) {
+            if (snake.collisionFood(foood)) {
                 resetFood.push(foood);
                 snake.grow(head[0],head[1]);
             }          

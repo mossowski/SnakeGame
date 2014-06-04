@@ -47,10 +47,28 @@ http.listen(app.get('port'), function () {
 var snakeLength = 3;        //poczatkowa dlugosc weza
 var autoId = 1;       
 var snakes = [];        //tablica wezow
+var food = [];
 var stageHeight = 60;
 var stageWidth = 60;
 
-Snake = (function() {
+var Food = (function() {
+
+    function Food() {
+        this.spawn();
+    }
+
+    Food.prototype.spawn = function() {
+        var randomHeight = Math.floor(Math.random() * 50);
+        var randomWidth = Math.floor(Math.random() * 45);
+               
+        this.x = randomWidth;
+        this.y = randomHeight;  
+    };
+
+    return Food;
+})();
+
+var Snake = (function() {
 
     function Snake(id) {
         this.id = id;
@@ -72,7 +90,13 @@ Snake = (function() {
             return results;
         };
         //console.log(snakePosition(this.length));
-        return this.elements = snakePosition(this.length);   
+        this.elements = snakePosition(this.length); 
+        return this.elements;   
+    };
+
+    Snake.prototype.grow = function(x,y) {           
+        this.length += 1;
+        this.elements.push([x, y]);
     };
 
     Snake.prototype.moveSnake = function() { 
@@ -81,14 +105,14 @@ Snake = (function() {
         //console.log("Dlugosc weza: " + this.length);
         var i;
         for (i = 0; i <= this.length - 2; i++) {
-        this.moveTail(i);
+            this.moveTail(i);
         }  
         return this.moveHead();
     };
 
     Snake.prototype.moveTail = function(i) {
         this.elements[i][0] = this.elements[i + 1][0];
-        return this.elements[i][1] = this.elements[i + 1][1];
+        this.elements[i][1] = this.elements[i + 1][1];
     };
     
     Snake.prototype.moveHead = function() {
@@ -108,8 +132,8 @@ Snake = (function() {
         case "down":
             this.elements[head][1] += 1;
             break;
-        } 
-        
+        }  
+
         if (this.elements[head][0] < 0) {
             this.elements[head][0] = stageWidth;
         }
@@ -125,13 +149,14 @@ Snake = (function() {
     };
 
     Snake.prototype.head = function() {
-      return this.elements[this.length - 1];
+        return this.elements[this.length - 1];
     };
-    
+
     Snake.prototype.collisionSnake = function(other) {
         var collision, element, i, enemySnake;
-        var head = this.head(); 
+        var head = this.head(); //tylko glowa
         collision = false;
+        //console.log("other" + other);
         enemySnake = other.elements;
         for (i = 0; i < enemySnake.length; i++) {
             element = enemySnake[i];
@@ -139,6 +164,19 @@ Snake = (function() {
                 collision = true;
             }
         }
+        return collision;
+    };
+
+    Snake.prototype.collisionFood = function(food) {
+        var collision;
+        var head = this.head(); //tylko glowa
+        collision = false;
+        
+        //console.log(food);
+        if (head[0] === food.x && head[1] === food.y) {
+            collision = true;
+        }
+        
         return collision;
     };
 
@@ -150,14 +188,16 @@ Snake = (function() {
 socket.on("connection", function(user) {
     var userId = autoId;
     var userSnake = new Snake(userId);
+    var userFood = new Food();
     autoId++;
     snakes.push(userSnake);
+    food.push(userFood);
 
     console.log("User with id:  " + userId + " connected");
 
     user.send(JSON.stringify({
-      type: 'id',
-      value: userId
+        type: 'id',
+        value: userId
     }));
 
     user.on("message", function(message) {
@@ -165,7 +205,8 @@ socket.on("connection", function(user) {
         message = JSON.parse(message);
         //console.log("message  = " + message);
         //console.log("message direction = " + message.direction);
-        return userSnake.direction = message.direction;
+        userSnake.direction = message.direction;
+        return userSnake.direction;
     });
 
     user.on("disconnect", function() {
@@ -177,22 +218,27 @@ socket.on("connection", function(user) {
     });
 });
 
-updateGame = function() {
+var updateGame = function() {
     var snake, i;
+
     for (i = 0; i < snakes.length; i++) {
-      snake = snakes[i];
-      snake.moveSnake();
+        snake = snakes[i];
+        snake.moveSnake();
     }
+
     checkCollisions();
+
     return socket.broadcast(JSON.stringify({
-      type: 'snakes',
-      value: snakes
+        type: 'snakes',
+        valueS: snakes,
+        valueF: food
     }));
 };
 
-checkCollisions = function() {
-    var other, snake, i, j, k, results;
+var checkCollisions = function() {
+    var other, snake, i, j, results, foood;
     var resetSnakes = [];
+    var resetFood = [];
     for (i = 0; i < snakes.length; i++) {
         snake = snakes[i];
       
@@ -204,13 +250,29 @@ checkCollisions = function() {
                 }
             }
         }
+    
+        for (j = 0; j < food.length; j++) {
+            foood = food[j];
+            var head = snake.head();  
+
+            if (head[0] === foood.x && head[1] === foood.y) {
+                resetFood.push(foood);
+                snake.grow(head[0],head[1]);
+            }          
+        }
         results = [];
 
-        for (k = 0; k < resetSnakes.length; k++) {
-            other = resetSnakes[k];
-            results.push(other.spawn());
+        for (j = 0; j < resetSnakes.length; j++) {
+            other = resetSnakes[j];
+            results.push(other.spawn());    
+        }
+
+        for(j = 0; j < resetFood.length; j++) {
+            foood = resetFood[j];
+            results.push(foood.spawn());
         }
     }
     return results;
 };
+
 setInterval(updateGame, 100);

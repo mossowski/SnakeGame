@@ -4,7 +4,6 @@ $(document).ready(function() {
     var stageWidth = 90;
     var id = null;
 
-    server = window.location.host.name;
     canvas = $("#stage");
     context = canvas.get(0).getContext("2d"); 
   

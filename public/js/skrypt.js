@@ -1,16 +1,16 @@
 $(document).ready(function() {
-    var canvas,server,context;
+
+    var canvas,context;
     var stageHeight = 60;
     var stageWidth = 90;
     var id = null;
+    var socket = io.connect('http://' + location.host);
 
     canvas = $("#stage");
     context = canvas.get(0).getContext("2d"); 
   
     var snakeDirection = function(direction) {    
-        return server.send(JSON.stringify({
-            'direction': direction
-        }));        
+        return socket.emit('direction', {'direction':  direction });        
     };
    
     var draw = function(snakes,food) {
@@ -37,6 +37,7 @@ $(document).ready(function() {
             if (snake.id === id) {
                 $("#score").html("Your score: " + snake.length);
             }
+
             if (snake.length > bestScore) {
                 $("#bestScore").html("Best score: " + snake.length);
                 bestScore = snake.length;
@@ -50,24 +51,16 @@ $(document).ready(function() {
         }       
     };
   
-    var connect = function() {
-        server = new io.Socket(window.location.host.name, {'port': 3000 });
-        server.connect();
-        return server.on("message", function(event) {
-            var message;
-            message = JSON.parse(event);
+    socket.on('message', function(message) {
             switch (message.type) {
                 case 'id':
-                     id = message.value;
+                    id = message.value;
                     return id;
                 case 'snakes':
                     return draw(message.valueS,message.valueF);
             }
-        });
-    };
-    
-    connect();   
-
+    });
+  
     return $(document).keydown(function(event) {
         var key;
         key = event.keyCode;

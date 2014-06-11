@@ -167,36 +167,96 @@ var Snake = (function() {
               // console.log("glowa: " + this.length-1);
               //console.log("miejsce uderzenia: " + i);
                 if (head[0] === enemyHead[0] && head[1] === enemyHead[1])  {
-                   // console.log("zderzenie glowami");
-                    
+                 //  console.log("zderzenie glowami"); //zwykle zderzenie 
                     if(this.direction === 'left')
-                        this.direction = 'right';
+                    {            
+                        for(i=0; i< this.length; i++)
+                        {
+                            this.elements[i][0] += 6;
+                        }  
+                        for(i=0; i< other.length; i++)
+                        {
+                            other.elements[i][0] -= 6;
+                        }   
+                    }
                     else if (this.direction === 'right')
-                        this.direction = 'left';
+                    { 
+                        for(i=0; i< this.length; i++)
+                        {
+                            this.elements[i][0] -= 6;
+                        }
+                        for(i=0; i< other.length; i++)
+                        {
+                            other.elements[i][0] += 6;
+                        }           
+                    }
                     else if (this.direction === 'up')
-                        this.direction = 'down';
+                    {
+                        for(i=0; i< this.length; i++)
+                        {
+                            this.elements[i][1] += 6;
+                        }
+                        for(i=0; i< other.length; i++)
+                        {
+                            other.elements[i][1] -= 6;
+                        }
+                    }
+                        
                     else if (this.direction === 'down')
-                        this.direction = 'up';
+                    {
+                        for(i=0; i< this.length; i++)
+                        {
+                            this.elements[i][1] -= 6;
+                        }
+                        for(i=0; i< other.length; i++)
+                        {
+                            other.elements[i][1] += 6;
+                        }
+                    }
 
                     return collision;
                 }
-                else if ((head[0] === enemySnake[other.length-2][0] && head[1] === enemySnake[other.length-2][1]) || (enemyHead[0] === this.elements[this.length-2][0] && enemyHead[1] === this.elements[this.length-2][1])) {
-                    
+                else if ((this.direction === 'up' && other.direction ==='down') || (this.direction === 'down' && other.direction ==='up') || (this.direction === 'right' && other.direction ==='left') || (this.direction === 'left' && other.direction ==='right')) {
+                   // console.log("zespsute"); //uderznie ][
                     if(this.direction === 'left') {
-                        this.elements[this.length-1][0] += 2;
-                        this.direction = 'right';
+                        for(i=0; i< this.length; i++)
+                          {
+                            this.elements[i][0] += 6
+                          }
+                          for(i=0; i< other.length; i++)
+                          {
+                            other.elements[i][0] -=6;
+                          }
                     }
                     else if (this.direction === 'right') {
-                        this.elements[this.length-1][0] -= 2;
-                        this.direction = 'left';
+                        for(i=0; i< this.length; i++)
+                          {
+                            this.elements[i][0] -= 6
+                          }
+                          for(i=0; i< other.length; i++)
+                          {
+                            other.elements[i][0] +=6;
+                          }
                     }
                     else if (this.direction === 'up') {
-                        this.elements[this.length-1][1] += 2;
-                        this.direction = 'down';
+                        for(i=0; i< this.length; i++)
+                        {
+                            this.elements[i][1] += 6
+                        }
+                        for(i=0; i< other.length; i++)
+                        {
+                            other.elements[i][1] -=6;
+                        }
                     }
                     else if (this.direction === 'down') {
-                        this.elements[this.length-1][1] -= 2;
-                        this.direction = 'up';
+                        for(i=0; i< this.length; i++)
+                          {
+                            this.elements[i][1] -= 6
+                          }
+                          for(i=0; i< other.length; i++)
+                          {
+                            other.elements[i][1] +=6;
+                          }
                     }
 
                     return collision;
@@ -228,7 +288,7 @@ var Snake = (function() {
 
 // Sockety
 
-socket.on("connection", function(user) {
+socket.on("connection", function(socket) {
     var userId = autoId;
     var userSnake = new Snake(userId);
     var userFood = new Food();
@@ -238,24 +298,21 @@ socket.on("connection", function(user) {
 
     console.log("User with id:  " + userId + " connected");
 
-    user.send(JSON.stringify({
-        type: 'id',
-        value: userId
-    }));
+    socket.emit('message', { type:  'id', value: userId });
 
-    user.on("message", function(message) {
-        //console.log("message  = " + message);
-        message = JSON.parse(message);
-        //console.log("message  = " + message);
-        //console.log("message direction = " + message.direction);
+    socket.on('direction', function(message) {
         userSnake.direction = message.direction;
         return userSnake.direction;
     });
 
-    user.on("disconnect", function() {
+    socket.on("disconnect", function() {
         var index = snakes.indexOf(userSnake);
         if(index > -1) {    //jestli istnieje
             snakes.splice(index,1);
+        }
+        index = food.indexOf(userFood);
+        if(index > -1) {    //jestli istnieje
+            food.splice(index,1);
         }
         return console.log("User with id:  " + userId + " disconnected");
     });
@@ -271,11 +328,11 @@ var updateGame = function() {
 
     checkCollisions();
 
-    return socket.broadcast(JSON.stringify({ //convert to JSON
+    return socket.emit('message',{ 
         type: 'snakes',
         valueS: snakes,
         valueF: food
-    }));
+    });
 };
 
 var checkCollisions = function() {
@@ -293,7 +350,7 @@ var checkCollisions = function() {
                     cut = snake.collisionSnake(other);
                   //  console.log("cut: " + cut);
                  //   console.log("other length before cut: " + other.length);
-                    if(other.length > 1) {
+                    if(other.length > 1) {       // jesli wiecej niz sama glowa
                         other.elements.splice(0,cut);
                         other.length -= cut;
                     }

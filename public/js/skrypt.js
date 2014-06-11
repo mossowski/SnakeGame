@@ -1,8 +1,8 @@
 $(document).ready(function() {
 
     var canvas,context;
-    var stageHeight = 60;
-    var stageWidth = 90;
+    var stageHeight = 49;
+    var stageWidth = 89;
     var id = null;
     var socket = io.connect('http://' + location.host);
 

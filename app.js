@@ -48,8 +48,8 @@ var snakeLength = 3;        //poczatkowa dlugosc weza
 var autoId = 1;       
 var snakes = [];        //tablica wezow
 var food = [];
-var stageHeight = 60;
-var stageWidth = 90;
+var stageHeight = 49;
+var stageWidth = 89;
 
 var Food = (function() {
 

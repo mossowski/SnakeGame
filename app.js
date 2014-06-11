@@ -89,7 +89,6 @@ var Snake = (function() {
             }
             return results;
         };
-        //console.log(snakePosition(this.length));
         this.elements = snakePosition(this.length); 
         return this.elements;   
     };
@@ -100,9 +99,6 @@ var Snake = (function() {
     };
 
     Snake.prototype.moveSnake = function() { 
-        //var head = this.length - 1;
-        //console.log("x: " + this.elements[head][0] + "  y: " + this.elements[head][1]);  
-        //console.log("Dlugosc weza: " + this.length);
         var i;
         for (i = 0; i <= this.length - 2; i++) {
             this.moveTail(i);
@@ -153,21 +149,20 @@ var Snake = (function() {
     };
 
     Snake.prototype.collisionSnake = function(other) {
+
         var collision, element, i, enemySnake;
         var head = this.head();
         var enemyHead = other.head();
         collision = false;
-        //console.log("other" + other);
-       // console.log("glowa: " + head);
         enemySnake = other.elements;
+
         for (i = 0; i < enemySnake.length; i++) {
             element = enemySnake[i];
             
-            if (head[0] === element[0] && head[1] === element[1]) {
-              // console.log("glowa: " + this.length-1);
-              //console.log("miejsce uderzenia: " + i);
-                if (head[0] === enemyHead[0] && head[1] === enemyHead[1])  {
-                 //  console.log("zderzenie glowami"); //zwykle zderzenie 
+            if (head[0] === element[0] && head[1] === element[1]) {   //zderzenie
+             
+                if (head[0] === enemyHead[0] && head[1] === enemyHead[1])  {       //glowami
+                   console.log("zderzenie glowami"); //zwykle zderzenie 
                     if(this.direction === 'left')
                     {            
                         for(i=0; i< this.length; i++)
@@ -200,8 +195,7 @@ var Snake = (function() {
                         {
                             other.elements[i][1] -= 6;
                         }
-                    }
-                        
+                    }  
                     else if (this.direction === 'down')
                     {
                         for(i=0; i< this.length; i++)
@@ -216,27 +210,88 @@ var Snake = (function() {
 
                     return collision;
                 }
-                else if ((this.direction === 'up' && other.direction ==='down') || (this.direction === 'down' && other.direction ==='up') || (this.direction === 'right' && other.direction ==='left') || (this.direction === 'left' && other.direction ==='right')) {
-                   // console.log("zespsute"); //uderznie ][
+                else if (this.length === 1 || other.length === 1) { 
+                    if(this.length === 1) {
+                        if ((head[0] === other.elements[other.length - 2][0] && head[1] === other.elements[other.length-2][1]) && (this.direction === 'up' && other.direction ==='down') || (this.direction === 'down' && other.direction ==='up') || (this.direction === 'right' && other.direction ==='left') || (this.direction === 'left' && other.direction ==='right')) {
+                      //console.log("waz dl 1");
+                            if((this.direction === 'left') && (enemyHead[0] === head[0] + 1)) {
+                               // console.log("1");
+                                for(i=0; i< this.length; i++)
+                                {
+                                   this.elements[i][0] += 6
+                                }
+                                for(i=0; i< other.length; i++)
+                                {
+                                   other.elements[i][0] -=6;
+                                }
+                            }
+                            else if ((this.direction === 'right') && (enemyHead[0] === head[0] - 1)) {
+                               // console.log("2");
+                                for(i=0; i< this.length; i++)
+                                {
+                                    this.elements[i][0] -= 6
+                                }
+                                for(i=0; i< other.length; i++)
+                                {
+                                    other.elements[i][0] +=6;
+                                }
+                            }
+                            else if ((this.direction === 'up') && (enemyHead[1] === head[1] + 1)) {
+                               // console.log("3");
+                                for(i=0; i< this.length; i++)
+                                {
+                                    this.elements[i][1] += 6
+                                }
+                                for(i=0; i< other.length; i++)
+                                {
+                                    other.elements[i][1] -=6;
+                                }
+                            }
+                            else if ((this.direction === 'down') && (enemyHead[1] === head[1] - 1)) {
+                               // console.log("4");
+                                for(i=0; i< this.length; i++)
+                                {
+                                    this.elements[i][1] -= 6
+                                }
+                                for(i=0; i< other.length; i++)
+                                {
+                                    other.elements[i][1] +=6;
+                                }
+                            }
+                            else {      
+                                //console.log("else cuttttt");
+                                return i+1;     //  indexy od 0 wiec +1
+                            }
+
+                            return collision;
+                        }
+                        else {      
+                           // console.log("else cutomg1");
+                            return i+1;     //  indexy od 0 wiec +1
+                        }
+                    }
+                }
+                else if ((head[0] === other.elements[other.length - 2][0] && head[1] === other.elements[other.length-2][1]) && (enemyHead[0] === this.elements[this.length - 2][0] && enemyHead[1] === this.elements[this.length-2][1])) {
+                    //console.log("dziwne");
                     if(this.direction === 'left') {
                         for(i=0; i< this.length; i++)
-                          {
+                        {
                             this.elements[i][0] += 6
-                          }
-                          for(i=0; i< other.length; i++)
-                          {
+                        }
+                        for(i=0; i< other.length; i++)
+                        {
                             other.elements[i][0] -=6;
-                          }
+                        }
                     }
                     else if (this.direction === 'right') {
                         for(i=0; i< this.length; i++)
-                          {
+                        {
                             this.elements[i][0] -= 6
-                          }
-                          for(i=0; i< other.length; i++)
-                          {
+                        }
+                        for(i=0; i< other.length; i++)
+                        {
                             other.elements[i][0] +=6;
-                          }
+                        }
                     }
                     else if (this.direction === 'up') {
                         for(i=0; i< this.length; i++)
@@ -250,19 +305,19 @@ var Snake = (function() {
                     }
                     else if (this.direction === 'down') {
                         for(i=0; i< this.length; i++)
-                          {
+                        {
                             this.elements[i][1] -= 6
-                          }
-                          for(i=0; i< other.length; i++)
-                          {
+                        }
+                        for(i=0; i< other.length; i++)
+                        {
                             other.elements[i][1] +=6;
-                          }
+                        }
                     }
 
-                    return collision;
+                    return collision; 
                 }
-                else {      
-                  //  console.log("miejsce uderzenia: " + i);
+                else {   
+                //  console.log("miejsce uderzenia: " + i);
                     return i+1;     //  indexy od 0 wiec +1
                 }
             }
@@ -271,11 +326,11 @@ var Snake = (function() {
     };
 
     Snake.prototype.collisionFood = function(food) {
+
         var collision;
-        var head = this.head(); //tylko glowa
+        var head = this.head(); 
         collision = false;
         
-        //console.log(food);
         if (head[0] === food.x && head[1] === food.y) {
             collision = true;
         }
@@ -289,6 +344,7 @@ var Snake = (function() {
 // Sockety
 
 socket.on("connection", function(socket) {
+
     var userId = autoId;
     var userSnake = new Snake(userId);
     var userFood = new Food();

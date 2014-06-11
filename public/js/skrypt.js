@@ -16,20 +16,19 @@ $(document).ready(function() {
     var draw = function(snakes,food) {
         var  snake, fud, x, y, i, j;
         var bestScore = 0;
-        context.fillStyle = '#A9D0F5 '; 
 
-        for (i = 0; i <= stageWidth; i++) {
-            for (j = 0; j <= stageHeight; j++) {
-                context.fillRect(i * 10, j * 10, 9, 9);
-            }
-        }
-
+        //mapa
+        context.fillStyle = '#A9D0F5 ';     
+        context.fillRect(0, 0, 900, 500);
+         
+        //food   
         for (i = 0; i < food.length; i++) {
             fud = food[i];
             context.fillStyle = '#66FF33'; 
             context.fillRect(fud.x * 10, fud.y * 10, 9, 9);      
         } 
-
+ 
+        //snake
         for (i = 0; i < snakes.length; i++) {
             snake = snakes[i];
             context.fillStyle = snake.id === id ? '#000000' : '#FF0000';
@@ -46,7 +45,7 @@ $(document).ready(function() {
             for (j = 0; j < snake.length; j++) {
                 x = snake.elements[j][0] * 10;
                 y = snake.elements[j][1] * 10;
-                context.fillRect(x, y, 9, 9);
+                context.fillRect(x, y, 9,9);
             }
         }       
     };

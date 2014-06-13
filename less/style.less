@@ -3,9 +3,12 @@
 @grey-color: #ECECEC;
 @menu-color:  #99CCFF;
 
-body {
-        font-family: Consolas, Helvetica, Arial, sans-serif;
-        margin: 0;
+html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0px;
+        border: 0;
+        overflow: hidden; 
 }
 h1 {
         font-weight: bold; 	
@@ -14,10 +17,7 @@ h1 {
 	font-size: 22px;
 }
 #stage {
-       	display: block;
-        border: @canvas-border;
-	margin-left: auto;
-	margin-right: auto;
+       	display:block;
 }
 #scoreBoard {
         text-align: center;
@@ -26,16 +26,12 @@ h1 {
 #bestScore {
         margin-left: 45px;
 }
+#position {
+        margin-left: 45px;
+}
 #menu { 
         background-color: @black-color;
         text-align: center;
         color: @menu-color;
         border:solid 1px @black-color;     
-}
-#container {
-       background-color: @grey-color;
-       padding:15px;
-       margin-left: auto;
-       margin-right: auto;
-       width: 900px;
 }

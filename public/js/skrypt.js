@@ -6,20 +6,23 @@ $(document).ready(function() {
     var id = null;
     var socket = io.connect('http://' + location.host);
 
-    canvas = $("#stage");
-    context = canvas.get(0).getContext("2d"); 
-  
+    canvas = document.getElementById("stage");
+    context = canvas.getContext("2d"); 
+
     var snakeDirection = function(direction) {    
         return socket.emit('direction', {'direction':  direction });        
     };
    
     var draw = function(snakes,food) {
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
         var  snake, fud, x, y, i, j;
         var bestScore = 0;
 
         //mapa
         context.fillStyle = '#A9D0F5 ';     
-        context.fillRect(0, 0, 900, 500);
+        context.fillRect(0, 0, canvas.width, canvas.height);
          
         //food   
         for (i = 0; i < food.length; i++) {
@@ -35,6 +38,7 @@ $(document).ready(function() {
 
             if (snake.id === id) {
                 $("#score").html("Your score: " + snake.length);
+                $("#position").html("X: " + snake.elements[snake.length - 1][0] + " Y: " +snake.elements[snake.length - 1][1]);
             }
 
             if (snake.length > bestScore) {

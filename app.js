@@ -130,7 +130,7 @@ var Snake = (function() {
             break;
         }  
 
-        if (this.elements[head][0] < 0) {
+        /*if (this.elements[head][0] < 0) {
             this.elements[head][0] = stageWidth;
         }
         if (this.elements[head][1] < 0) {
@@ -141,7 +141,7 @@ var Snake = (function() {
         }
         if (this.elements[head][1] > stageHeight) {
             this.elements[head][1] = 0;
-        }  
+        }  */
     };
 
     Snake.prototype.head = function() {
@@ -162,7 +162,7 @@ var Snake = (function() {
             if (head[0] === element[0] && head[1] === element[1]) {   //zderzenie
              
                 if (head[0] === enemyHead[0] && head[1] === enemyHead[1])  {       //glowami
-                   console.log("zderzenie glowami"); //zwykle zderzenie 
+                 //  console.log("zderzenie glowami"); //zwykle zderzenie 
                     if(this.direction === 'left')
                     {            
                         for(i=0; i< this.length; i++)

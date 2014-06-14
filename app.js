@@ -56,8 +56,8 @@ var Food = (function() {
     }
 
     Food.prototype.spawn = function() {
-        var randomHeight = Math.floor(Math.random() * 80);
-        var randomWidth = Math.floor(Math.random() * 80);
+        var randomHeight = Math.floor(Math.random() * 120);
+        var randomWidth = Math.floor(Math.random() * 120);
                
         this.x = randomWidth;
         this.y = randomHeight;  
@@ -75,8 +75,8 @@ var Snake = (function() {
 
     Snake.prototype.spawn = function() {
         var i;
-        var randomHeight = Math.floor(Math.random() * 80);
-        var randomWidth = Math.floor(Math.random() * 80);
+        var randomHeight = Math.floor(Math.random() * 120);
+        var randomWidth = Math.floor(Math.random() * 120);
         this.length = snakeLength;
         this.direction = "up";
 
@@ -393,6 +393,7 @@ var checkCollisions = function() {
     var other, snake, i, j, k, results, foood, head, cut;
     var resetSnakes = [];
     var resetFood = [];
+    
     for (i = 0; i < snakes.length; i++) {
         snake = snakes[i];
       
@@ -408,7 +409,6 @@ var checkCollisions = function() {
                         other.elements.splice(0,cut);
                         other.length -= cut;
                     }
-                    
                  //   console.log("other length after cut: " + other.length);
                     for(k = 0; k < cut; k++)
                         snake.grow(head[0],head[1]);

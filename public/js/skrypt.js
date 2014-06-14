@@ -39,13 +39,13 @@ $(document).ready(function() {
 
         //console.log("srodek ekranu x: " + canvas.width/2 + " y: " + canvas.height/2);
         //mapa
-        context.fillStyle = '#A9D0F5 ';     
+        context.fillStyle = '#FFFFFF';     
         context.fillRect(0, 0, canvas.width, canvas.height);
          
         //food   
         for (i = 0; i < food.length; i++) {
             fud = food[i];
-            context.fillStyle = '#66FF33'; 
+            context.fillStyle = '#27B841'; 
             context.fillRect(fud.x * 10 + xPrzesun, fud.y * 10 + yPrzesun, 9, 9);      
         } 
  

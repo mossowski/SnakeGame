@@ -48,8 +48,6 @@ var snakeLength = 3;        //poczatkowa dlugosc weza
 var autoId = 1;       
 var snakes = [];        //tablica wezow
 var food = [];
-var stageHeight = 49;
-var stageWidth = 89;
 
 var Food = (function() {
 
@@ -58,8 +56,8 @@ var Food = (function() {
     }
 
     Food.prototype.spawn = function() {
-        var randomHeight = Math.floor(Math.random() * 50);
-        var randomWidth = Math.floor(Math.random() * 65);
+        var randomHeight = Math.floor(Math.random() * 80);
+        var randomWidth = Math.floor(Math.random() * 80);
                
         this.x = randomWidth;
         this.y = randomHeight;  
@@ -77,10 +75,10 @@ var Snake = (function() {
 
     Snake.prototype.spawn = function() {
         var i;
-        var randomHeight = Math.floor(Math.random() * 50);
-        var randomWidth = Math.floor(Math.random() * 65);
+        var randomHeight = Math.floor(Math.random() * 80);
+        var randomWidth = Math.floor(Math.random() * 80);
         this.length = snakeLength;
-        this.direction = "right";
+        this.direction = "up";
 
         var snakePosition = function(length) {
             var results = [];
@@ -218,7 +216,7 @@ var Snake = (function() {
                                // console.log("1");
                                 for(i=0; i< this.length; i++)
                                 {
-                                   this.elements[i][0] += 6
+                                   this.elements[i][0] += 6;
                                 }
                                 for(i=0; i< other.length; i++)
                                 {
@@ -229,7 +227,7 @@ var Snake = (function() {
                                // console.log("2");
                                 for(i=0; i< this.length; i++)
                                 {
-                                    this.elements[i][0] -= 6
+                                    this.elements[i][0] -= 6;
                                 }
                                 for(i=0; i< other.length; i++)
                                 {
@@ -240,7 +238,7 @@ var Snake = (function() {
                                // console.log("3");
                                 for(i=0; i< this.length; i++)
                                 {
-                                    this.elements[i][1] += 6
+                                    this.elements[i][1] += 6;
                                 }
                                 for(i=0; i< other.length; i++)
                                 {
@@ -251,7 +249,7 @@ var Snake = (function() {
                                // console.log("4");
                                 for(i=0; i< this.length; i++)
                                 {
-                                    this.elements[i][1] -= 6
+                                    this.elements[i][1] -= 6;
                                 }
                                 for(i=0; i< other.length; i++)
                                 {
@@ -276,7 +274,7 @@ var Snake = (function() {
                     if(this.direction === 'left') {
                         for(i=0; i< this.length; i++)
                         {
-                            this.elements[i][0] += 6
+                            this.elements[i][0] += 6;
                         }
                         for(i=0; i< other.length; i++)
                         {
@@ -286,7 +284,7 @@ var Snake = (function() {
                     else if (this.direction === 'right') {
                         for(i=0; i< this.length; i++)
                         {
-                            this.elements[i][0] -= 6
+                            this.elements[i][0] -= 6;
                         }
                         for(i=0; i< other.length; i++)
                         {
@@ -296,7 +294,7 @@ var Snake = (function() {
                     else if (this.direction === 'up') {
                         for(i=0; i< this.length; i++)
                         {
-                            this.elements[i][1] += 6
+                            this.elements[i][1] += 6;
                         }
                         for(i=0; i< other.length; i++)
                         {
@@ -306,7 +304,7 @@ var Snake = (function() {
                     else if (this.direction === 'down') {
                         for(i=0; i< this.length; i++)
                         {
-                            this.elements[i][1] -= 6
+                            this.elements[i][1] -= 6;
                         }
                         for(i=0; i< other.length; i++)
                         {

@@ -1,8 +1,6 @@
 $(document).ready(function() {
 
     var canvas,context;
-    var stageHeight = 49;
-    var stageWidth = 89;
     var id = null;
     var socket = io.connect('http://' + location.host);
 
@@ -19,7 +17,27 @@ $(document).ready(function() {
         canvas.height = window.innerHeight;
         var  snake, fud, x, y, i, j;
         var bestScore = 0;
+        var xMiddle = canvas.width/2;  //srodek ekranu szerokosc
+        var yMiddle = canvas.height/2;  //srodek ekranu wysokosc
+        var xSnake, ySnake;
+        var xPrzesun, yPrzesun;
 
+        // pozycja weza
+        for (i = 0; i < snakes.length; i++) {
+            snake = snakes[i];
+
+            if (snake.id === id) {
+                xSnake = snake.elements[snake.length-1][0] * 10;
+                ySnake = snake.elements[snake.length-1][1] * 10;
+                //console.log("snake x: " + xSnake + " y: " + ySnake);
+            }
+        } 
+
+        // obliczanie przesuniecia 
+        xPrzesun = xMiddle - xSnake;
+        yPrzesun = yMiddle - ySnake;
+
+        //console.log("srodek ekranu x: " + canvas.width/2 + " y: " + canvas.height/2);
         //mapa
         context.fillStyle = '#A9D0F5 ';     
         context.fillRect(0, 0, canvas.width, canvas.height);
@@ -28,7 +46,7 @@ $(document).ready(function() {
         for (i = 0; i < food.length; i++) {
             fud = food[i];
             context.fillStyle = '#66FF33'; 
-            context.fillRect(fud.x * 10, fud.y * 10, 9, 9);      
+            context.fillRect(fud.x * 10 + xPrzesun, fud.y * 10 + yPrzesun, 9, 9);      
         } 
  
         //snake
@@ -49,7 +67,7 @@ $(document).ready(function() {
             for (j = 0; j < snake.length; j++) {
                 x = snake.elements[j][0] * 10;
                 y = snake.elements[j][1] * 10;
-                context.fillRect(x, y, 9,9);
+                context.fillRect(x + xPrzesun, y + yPrzesun, 9,9);
             }
         }       
     };
@@ -77,5 +95,5 @@ $(document).ready(function() {
             case 40:
                 return snakeDirection("down");
         }
-      });   
+    });   
 });

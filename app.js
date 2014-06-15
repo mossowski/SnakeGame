@@ -78,15 +78,15 @@ var Snake = (function() {
     Snake.prototype.spawn = function() {
         var i;
         var sign = Math.random() < 0.5 ? -1 : 1;
-        var randomHeight = Math.floor(Math.random() * 120 * sign);
-        var randomWidth = Math.floor(Math.random() * 120 * sign);
+        var randomHeight = Math.floor(Math.random() * 150 * sign);   //1801439850948192
+        var randomWidth = Math.floor(Math.random() * 150 * sign);
         this.length = snakeLength;
         this.direction = "up";
 
         var snakePosition = function(length) {
             var results = [];
             for (i =  length - 1; i >= 0; i--) {
-                results.push([randomWidth + i, randomHeight]);
+                results.push([randomWidth, randomHeight + i]);
             }
             return results;
         };
@@ -131,18 +131,18 @@ var Snake = (function() {
             break;
         }  
 
-        /*if (this.elements[head][0] < 0) {
-            this.elements[head][0] = stageWidth;
+        if (this.elements[head][0] < -1801439850948195) {
+            this.elements[head][0] = 1801439850948194;
         }
-        if (this.elements[head][1] < 0) {
-            this.elements[head][1] = stageHeight;
+        if (this.elements[head][1] < -1801439850948195) {
+            this.elements[head][1] = 1801439850948194;
         }
-        if (this.elements[head][0] > stageWidth) {
-            this.elements[head][0] = 0;
+        if (this.elements[head][0] > 1801439850948195) {
+            this.elements[head][0] = -1801439850948194;
         }
-        if (this.elements[head][1] > stageHeight) {
-            this.elements[head][1] = 0;
-        }  */
+        if (this.elements[head][1] > 1801439850948195) {
+            this.elements[head][1] = -1801439850948194;
+        }  
     };
 
     Snake.prototype.head = function() {
@@ -157,54 +157,42 @@ var Snake = (function() {
         collision = false;
         enemySnake = other.elements;
 
-        for (i = 0; i < enemySnake.length; i++) {
+        for ( i = 0; i < enemySnake.length; i++) {
             element = enemySnake[i];
             
             if (head[0] === element[0] && head[1] === element[1]) {   //zderzenie
              
                 if (head[0] === enemyHead[0] && head[1] === enemyHead[1])  {       //glowami
                  //  console.log("zderzenie glowami"); //zwykle zderzenie 
-                    if(this.direction === 'left')
-                    {            
-                        for(i=0; i< this.length; i++)
-                        {
+                    if(this.direction === 'left') {            
+                        for ( i = 0; i < this.length; i++) {
                             this.elements[i][0] += 6;
                         }  
-                        for(i=0; i< other.length; i++)
-                        {
+                        for ( i = 0; i < other.length; i++) {
                             other.elements[i][0] -= 6;
                         }   
                     }
-                    else if (this.direction === 'right')
-                    { 
-                        for(i=0; i< this.length; i++)
-                        {
+                    else if (this.direction === 'right') { 
+                        for ( i = 0; i < this.length; i++) {
                             this.elements[i][0] -= 6;
                         }
-                        for(i=0; i< other.length; i++)
-                        {
+                        for ( i = 0; i < other.length; i++) {
                             other.elements[i][0] += 6;
                         }           
                     }
-                    else if (this.direction === 'up')
-                    {
-                        for(i=0; i< this.length; i++)
-                        {
+                    else if (this.direction === 'up') {
+                        for ( i = 0; i < this.length; i++) {
                             this.elements[i][1] += 6;
                         }
-                        for(i=0; i< other.length; i++)
-                        {
+                        for ( i = 0; i < other.length; i++) {
                             other.elements[i][1] -= 6;
                         }
                     }  
-                    else if (this.direction === 'down')
-                    {
-                        for(i=0; i< this.length; i++)
-                        {
+                    else if (this.direction === 'down') {
+                        for ( i = 0; i < this.length; i++) {
                             this.elements[i][1] -= 6;
                         }
-                        for(i=0; i< other.length; i++)
-                        {
+                        for ( i = 0; i < other.length; i++) {
                             other.elements[i][1] += 6;
                         }
                     }
@@ -217,45 +205,37 @@ var Snake = (function() {
                       //console.log("waz dl 1");
                             if((this.direction === 'left') && (enemyHead[0] === head[0] + 1)) {
                                // console.log("1");
-                                for(i=0; i< this.length; i++)
-                                {
+                                for ( i = 0; i < this.length; i++) {
                                    this.elements[i][0] += 6;
                                 }
-                                for(i=0; i< other.length; i++)
-                                {
+                                for ( i = 0; i < other.length; i++) {
                                    other.elements[i][0] -=6;
                                 }
                             }
                             else if ((this.direction === 'right') && (enemyHead[0] === head[0] - 1)) {
                                // console.log("2");
-                                for(i=0; i< this.length; i++)
-                                {
+                                for ( i = 0; i < this.length; i++) {
                                     this.elements[i][0] -= 6;
                                 }
-                                for(i=0; i< other.length; i++)
-                                {
+                                for ( i = 0; i < other.length; i++) {
                                     other.elements[i][0] +=6;
                                 }
                             }
                             else if ((this.direction === 'up') && (enemyHead[1] === head[1] + 1)) {
                                // console.log("3");
-                                for(i=0; i< this.length; i++)
-                                {
+                                for ( i = 0; i < this.length; i++) {
                                     this.elements[i][1] += 6;
                                 }
-                                for(i=0; i< other.length; i++)
-                                {
+                                for ( i = 0; i < other.length; i++) {
                                     other.elements[i][1] -=6;
                                 }
                             }
                             else if ((this.direction === 'down') && (enemyHead[1] === head[1] - 1)) {
                                // console.log("4");
-                                for(i=0; i< this.length; i++)
-                                {
+                                for ( i = 0; i < this.length; i++) {
                                     this.elements[i][1] -= 6;
                                 }
-                                for(i=0; i< other.length; i++)
-                                {
+                                for ( i = 0; i < other.length; i++) {
                                     other.elements[i][1] +=6;
                                 }
                             }
@@ -275,42 +255,34 @@ var Snake = (function() {
                 else if ((head[0] === other.elements[other.length - 2][0] && head[1] === other.elements[other.length-2][1]) && (enemyHead[0] === this.elements[this.length - 2][0] && enemyHead[1] === this.elements[this.length-2][1])) {
                     //console.log("dziwne");
                     if(this.direction === 'left') {
-                        for(i=0; i< this.length; i++)
-                        {
+                        for ( i = 0; i < this.length; i++) {
                             this.elements[i][0] += 6;
                         }
-                        for(i=0; i< other.length; i++)
-                        {
+                        for ( i = 0; i < other.length; i++) {
                             other.elements[i][0] -=6;
                         }
                     }
                     else if (this.direction === 'right') {
-                        for(i=0; i< this.length; i++)
-                        {
+                        for ( i = 0; i < this.length; i++) {
                             this.elements[i][0] -= 6;
                         }
-                        for(i=0; i< other.length; i++)
-                        {
+                        for ( i = 0; i < other.length; i++) {
                             other.elements[i][0] +=6;
                         }
                     }
                     else if (this.direction === 'up') {
-                        for(i=0; i< this.length; i++)
-                        {
+                        for ( i = 0; i < this.length; i++) {
                             this.elements[i][1] += 6;
                         }
-                        for(i=0; i< other.length; i++)
-                        {
+                        for ( i = 0; i < other.length; i++) {
                             other.elements[i][1] -=6;
                         }
                     }
                     else if (this.direction === 'down') {
-                        for(i=0; i< this.length; i++)
-                        {
+                        for ( i = 0; i < this.length; i++) {
                             this.elements[i][1] -= 6;
                         }
-                        for(i=0; i< other.length; i++)
-                        {
+                        for ( i = 0; i < other.length; i++) {
                             other.elements[i][1] +=6;
                         }
                     }
@@ -356,7 +328,6 @@ socket.on("connection", function(socket) {
 
     socket.on('direction', function(message) {
         userSnake.direction = message.direction;
-        return userSnake.direction;
     });
 
     socket.on("disconnect", function() {
@@ -369,11 +340,11 @@ socket.on("connection", function(socket) {
 });
 
 var generateFood = function() {
-    for(i = 0; i < foodAmount; i++) {
+    for (i = 0; i < foodAmount; i++) {
         var newFood = new Food();
         food.push(newFood);
     }     
- // console.log("Wygenerowano food");
+    //console.log("Wygenerowano food");
 };
 
 var updateGame = function() {
@@ -394,9 +365,7 @@ var updateGame = function() {
 };
 
 var checkCollisions = function() {
-    var other, snake, i, j, k, results, foood, head, cut;
-    var resetSnakes = [];
-    var resetFood = [];
+    var other, snake, i, j, k, foood, head, cut;
     
     for (i = 0; i < snakes.length; i++) {
         snake = snakes[i];
@@ -405,16 +374,17 @@ var checkCollisions = function() {
             other = snakes[j];
             head = snake.head(); 
             if (other !== snake) {
-                if (snake.collisionSnake(other) !== false) {  //false || 0,1 itd.
-                    cut = snake.collisionSnake(other);
-                  //  console.log("cut: " + cut);
-                 //   console.log("other length before cut: " + other.length);
-                    if(other.length > 1) {       // jesli wiecej niz sama glowa
+                cut = snake.collisionSnake(other);
+                //console.log("cut: " + cut);
+                if (cut !== false) {  //false || 0,1 itd.
+                    //console.log("cut: " + cut);
+                    //console.log("other length before cut: " + other.length);
+                    if (other.length > 1) {       // jesli wiecej niz sama glowa
                         other.elements.splice(0,cut);
                         other.length -= cut;
                     }
-                 //   console.log("other length after cut: " + other.length);
-                    for(k = 0; k < cut; k++)
+                    //console.log("other length after cut: " + other.length);
+                    for (k = 0; k < cut; k++)
                         snake.grow(head[0],head[1]);
                 }
             }
@@ -425,23 +395,11 @@ var checkCollisions = function() {
             head = snake.head();  
 
             if (snake.collisionFood(foood)) {
-                resetFood.push(foood);
+                foood.spawn();
                 snake.grow(head[0],head[1]);
             }          
         }
-        results = [];
-
-        for (j = 0; j < resetSnakes.length; j++) {
-            other = resetSnakes[j];
-            results.push(other.spawn());    
-        }
-
-        for(j = 0; j < resetFood.length; j++) {
-            foood = resetFood[j];
-            results.push(foood.spawn());
-        }
     }
-    return results;
 };
 
 generateFood();

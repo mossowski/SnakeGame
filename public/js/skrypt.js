@@ -30,7 +30,7 @@ $(document).ready(function() {
             if (snake.id === id) {
                 xSnake = snake.elements[snake.length-1][0] * 10;
                 ySnake = snake.elements[snake.length-1][1] * 10;
-                //console.log("My snake x: " + xSnake + " y: " + ySnake);
+                //console.log("My snake x: " + snake.elements[snake.length-1][0] + " y: " + snake.elements[snake.length-1][1]);
             }
         } 
 
@@ -40,7 +40,7 @@ $(document).ready(function() {
         //console.log("srodek ekranu x: " + canvas.width/2 + " y: " + canvas.height/2);
         
         //mapa
-        context.fillStyle = '#FFFFFF';     
+        context.fillStyle = '#FFFFFF';  //bialy   
         context.fillRect(0, 0, canvas.width, canvas.height);
          
         //food   
@@ -49,7 +49,7 @@ $(document).ready(function() {
                 
             if (fud.x * 10 < xSnake + canvas.width/2 && fud.x * 10 > xSnake - canvas.width/2) {
                 if(fud.y * 10 < ySnake + canvas.height/2 && fud.y * 10 > ySnake - canvas.height/2) {
-                    context.fillStyle = '#27B841'; 
+                    context.fillStyle = '#27B841'; //zielony
                     context.fillRect(fud.x * 10 + xPrzesun, fud.y * 10 + yPrzesun, 9, 9); 
                     //console.log("draw food x: " + fud.x * 10 + " y: " + fud.y * 10);
                 } 
@@ -59,7 +59,7 @@ $(document).ready(function() {
         //snake
         for (i = 0; i < snakes.length; i++) {
             snake = snakes[i];
-            context.fillStyle = snake.id === id ? '#000000' : '#FF0000';
+            context.fillStyle = snake.id === id ? '#000000' : '#FF0000'; //czarny | czerwony
 
             if (snake.id === id) {
                 $("#score").html("Your score: " + snake.length);

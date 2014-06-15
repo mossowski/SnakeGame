@@ -48,6 +48,7 @@ var snakeLength = 3;        //poczatkowa dlugosc weza
 var autoId = 1;       
 var snakes = [];        //tablica wezow
 var food = [];
+var foodAmount = 500;
 
 var Food = (function() {
 
@@ -56,9 +57,10 @@ var Food = (function() {
     }
 
     Food.prototype.spawn = function() {
-        var randomHeight = Math.floor(Math.random() * 120);
-        var randomWidth = Math.floor(Math.random() * 120);
-               
+        var sign = Math.random() < 0.5 ? -1 : 1;
+        var randomHeight = Math.floor(Math.random() * 500 * sign);
+        var randomWidth = Math.floor(Math.random() * 500 * sign);
+        //console.log("Spawned food x: " + randomWidth + " y: " + randomHeight);       
         this.x = randomWidth;
         this.y = randomHeight;  
     };
@@ -75,8 +77,9 @@ var Snake = (function() {
 
     Snake.prototype.spawn = function() {
         var i;
-        var randomHeight = Math.floor(Math.random() * 120);
-        var randomWidth = Math.floor(Math.random() * 120);
+        var sign = Math.random() < 0.5 ? -1 : 1;
+        var randomHeight = Math.floor(Math.random() * 120 * sign);
+        var randomWidth = Math.floor(Math.random() * 120 * sign);
         this.length = snakeLength;
         this.direction = "up";
 
@@ -345,11 +348,8 @@ socket.on("connection", function(socket) {
 
     var userId = autoId;
     var userSnake = new Snake(userId);
-    var userFood = new Food();
     autoId++;
     snakes.push(userSnake);
-    food.push(userFood);
-
     console.log("User with id:  " + userId + " connected");
 
     socket.emit('message', { type:  'id', value: userId });
@@ -364,13 +364,17 @@ socket.on("connection", function(socket) {
         if(index > -1) {    //jestli istnieje
             snakes.splice(index,1);
         }
-        index = food.indexOf(userFood);
-        if(index > -1) {    //jestli istnieje
-            food.splice(index,1);
-        }
         return console.log("User with id:  " + userId + " disconnected");
     });
 });
+
+var generateFood = function() {
+    for(i = 0; i < foodAmount; i++) {
+        var newFood = new Food();
+        food.push(newFood);
+    }     
+ // console.log("Wygenerowano food");
+};
 
 var updateGame = function() {
     var snake, i;
@@ -440,4 +444,5 @@ var checkCollisions = function() {
     return results;
 };
 
+generateFood();
 setInterval(updateGame, 100);
